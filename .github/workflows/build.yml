@@ -22,12 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # ⭐ 装 Android SDK（含 API 29 + build-tools 29.0.3 + 自动接受 License）
+      # ⭐ 装 Android SDK（含 API 30 + build-tools 30.0.3 + 自动接受 License）
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
         with:
-          android-version: 29
-          build-tools-version: 29.0.3
+          # v3 改用 api-level（v2 时代的 android-version 已废弃）
+          api-level: 30
+          build-tools-version: '30.0.3'
 
       # 兜底：再显式接受一次 license（防止有些组件漏掉）
       - name: Accept Android SDK licenses

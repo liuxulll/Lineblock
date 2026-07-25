@@ -2,13 +2,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    // AGP 7+ 强制要求 namespace（替代 AndroidManifest 里的 package，但 manifest 仍可保留）
+    namespace 'com.lineblock.app'
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.lineblock.app"           // 包名
-        minSdkVersion 29                             // 目标 API 29（Android 10）
-        targetSdkVersion 29
+        minSdkVersion 29                             // 目标 API 29（Android 10）—— 用户硬性要求
+        targetSdkVersion 29                          // targetSdk 也保持 29
         versionCode 1
         versionName "1.0"
     }
