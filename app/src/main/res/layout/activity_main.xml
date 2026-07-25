@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 主界面布局：纯原生 LinearLayout 纵向排列，按钮 + 开关 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LineBlock"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="一条用来遮挡屏幕指定位置的可拖动细线"
+        android:paddingBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="悬浮窗权限：检测中…"
+        android:paddingBottom="16dp" />
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="启动悬浮窗" />
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="关闭悬浮窗" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp" />
+
+    <Switch
+        android:id="@+id/sw_locked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="锁定位置" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开启后悬浮窗不可拖动（防止误触）"
+        android:textSize="12sp"
+        android:paddingBottom="16dp" />
+
+    <Switch
+        android:id="@+id/sw_border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示边框（调试用）" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开启后悬浮窗会显示一条灰色细线，方便定位"
+        android:textSize="12sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="提示：\n• 长按悬浮窗 1 秒进入拖动\n• 单击悬浮窗弹出控制菜单\n• 拖动完成后位置自动保存"
+        android:textSize="12sp"
+        android:padding="8dp"
+        android:background="#EEEEEE" />
+
+</LinearLayout>

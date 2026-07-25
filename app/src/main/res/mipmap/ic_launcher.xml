@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 兼容老版本的 launcher icon（用 vector 简化处理） -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#3F51B5"
+        android:pathData="M0,0 L48,0 L48,48 L0,48 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,22 L40,22 L40,26 L8,26 Z" />
+</vector>

@@ -1,0 +1,22 @@
+// 项目级 build.gradle —— 配置所有模块共用的仓库和插件版本
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Android Gradle Plugin 版本，4.1.x 兼容 Gradle 6.8+，对 API 29 足够
+        classpath 'com.android.tools.build:gradle:4.1.3'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
