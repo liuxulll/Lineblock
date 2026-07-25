@@ -1,0 +1,3 @@
+// settings.gradle —— 声明模块
+rootProject.name = "LineBlock"
+include ':app'
