@@ -1,0 +1,30 @@
+# ============ Gradle ============
+.gradle/
+build/
+**/build/
+*.apk
+*.aab
+*.dex
+*.class
+local.properties            # ← 含本机 SDK 路径，绝对不能进 git
+
+# ============ Android Studio / IDEA ============
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+captures/
+
+# ============ Kotlin ============
+*.hprof
+
+# ====================== 其它 ===============
+.DS_Store
+Thumbs.db
+*.log
+
+# ============ Keystore（签名文件，绝不能进 git）============
+*.jks
+*.keystore
+keystore.properties
