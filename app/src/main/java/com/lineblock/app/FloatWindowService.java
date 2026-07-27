@@ -18,8 +18,10 @@ import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
@@ -188,19 +190,41 @@ public class FloatWindowService extends Service {
         private boolean mMoved;           // 是否明显移动过
         private boolean mDragging;        // 是否处于拖动模式
 
-        // 长按 1 秒 → 进入拖动模式
-        private final Runnable mLongPressTrigger = new Runnable() {
-            @Override public void run() {
-                mDragging = true;
-                doVibrate();
-                Log.d(TAG, "进入拖动模式");
-            }
-        };
+        private final GestureDetector mGestureDetector;
+        private final int mTouchSlop;
 
         LineView(Context ctx) {
             super(ctx);
+            // 保证能接收点击事件（否则某些设备上onTouchEvent不会被调用）
+            setClickable(true);
+            setFocusable(true);
+
             // 初始化背景：调试边框/透明
             applyBackground();
+
+            mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+            mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    // 单击直接弹菜单（只有在没有明显移动且未处于拖动时)
+                    if (!mMoved && !mDragging) {
+                        showMenu();
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    // 长按进入拖动（受锁定限制）
+                    if (!mSettings.isLocked()) {
+                        mDragging = true;
+                        doVibrate();
+                        Log.d(TAG, "进入拖动模式 (GestureDetector)");
+                    }
+                }
+            });
         }
 
         /** 根据"是否显示边框"设置背景：显示=灰线，隐藏=完全透明 */
@@ -216,6 +240,9 @@ public class FloatWindowService extends Service {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
+            // 先让 GestureDetector 识别单击/长按
+            mGestureDetector.onTouchEvent(event);
+
             // 如果锁定了，则只允许"单击弹菜单"，不允许拖动
             boolean locked = mSettings.isLocked();
 
@@ -225,23 +252,15 @@ public class FloatWindowService extends Service {
                     mDownRawY = event.getRawY();
                     mDownY    = mLp.y;
                     mMoved    = false;
-                    mDragging = false;
-
-                    // 安排 1 秒长按定时器（仅在非锁定模式下才安排）
-                    mHandler.removeCallbacks(mLongPressTrigger);
-                    if (!locked) {
-                        mHandler.postDelayed(mLongPressTrigger, LONG_PRESS_MS);
-                    }
+                    // 注意：不再使用手动长按定时器（GestureDetector 处理）
                     return true; // 消费
                 }
 
                 case MotionEvent.ACTION_MOVE: {
                     float dx = Math.abs(event.getRawX() - mDownRawX);
                     float dy = Math.abs(event.getRawY() - mDownRawY);
-                    if (dx > SLOP || dy > SLOP) {
+                    if (dx > mTouchSlop || dy > mTouchSlop) {
                         mMoved = true;
-                        // 明显在滑动 → 取消长按定时器
-                        mHandler.removeCallbacks(mLongPressTrigger);
                     }
                     if (mDragging && !locked) {
                         int newY = (int) (mDownY + (event.getRawY() - mDownRawY));
@@ -257,17 +276,12 @@ public class FloatWindowService extends Service {
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL: {
-                    mHandler.removeCallbacks(mLongPressTrigger);
-
+                    // 如果在拖动中，保存位置；否则单击由 GestureDetector 的 onSingleTapConfirmed 处理
                     if (mDragging) {
-                        // 拖动结束 → 保存位置（按比例保存，跨分辨率保持一致）
                         mDragging = false;
                         float ratio = mLp.y / (float) mScreenHeight;
                         mSettings.setYRatio(ratio);
                         Log.d(TAG, "保存位置 ratio=" + ratio);
-                    } else if (!mMoved) {
-                        // 单击（非长按且未滑动） → 弹菜单
-                        showMenu();
                     }
                     return true;
                 }
