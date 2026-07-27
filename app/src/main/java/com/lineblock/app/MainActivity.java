@@ -2,7 +2,6 @@ package com.lineblock.app;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.CompoundButton;
@@ -79,12 +78,11 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQ_OVERLAY_PERMISSION);
             return;
         }
+        // 用普通 startService，不用 startForegroundService
+        // 原因：startForegroundService 要求 5 秒内调 startForeground，否则 ANR 闪退
+        // 而 manifest 缺 foregroundServiceType 声明，startForeground 也会被系统拒绝
         Intent i = new Intent(this, FloatWindowService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(i);
-        } else {
-            startService(i);
-        }
+        startService(i);
         Toast.makeText(this, "悬浮窗已启动", Toast.LENGTH_SHORT).show();
         // 启动后可以退出主界面
         finish();

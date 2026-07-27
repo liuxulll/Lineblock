@@ -85,8 +85,8 @@ public class FloatWindowService extends Service {
         mSettings   = SettingsManager.getInstance(this);
         mVibrator   = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        // 启动前台服务（Android 8+ 必须）
-        startInForeground();
+        // 不用前台服务！Android 10+ 要求 manifest 声明 foregroundServiceType
+        // 否则 startForeground 会 ANR 闪退。普通 Service 启动更稳。
 
         // 屏幕尺寸
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -100,6 +100,7 @@ public class FloatWindowService extends Service {
         mLp       = createLayoutParams();
         try {
             mWindowManager.addView(mLineView, mLp);
+            Log.d(TAG, "悬浮窗已添加: y=" + mLp.y + " thickness=" + mLp.height);
         } catch (Exception e) {
             Log.e(TAG, "添加悬浮窗失败（可能是权限未授予）", e);
             Toast.makeText(this, "添加悬浮窗失败：" + e.getMessage(), Toast.LENGTH_LONG).show();
